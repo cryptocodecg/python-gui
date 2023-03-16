@@ -5,15 +5,7 @@ from tkinter import *
 import datetime
 import timedelta
 
-f = open('receipt.txt', 'a')
-# f.write('\nHello world!')
-# f.close()
-
-# f = open('receipt.txt', 'r')
-# contents = f.read()
-# print(contents)
-# f.close()
-
+receipt_text = "\n\n"
 
 jakarta_time = datetime.datetime.now() + datetime.timedelta(hours=7)
 
@@ -22,11 +14,7 @@ print("Today's date is {:%Y-%b-%d %H:%M:%S}".format(jakarta_time))
 
 jakarta_time_text = "Today's date is {:%Y-%b-%d %H:%M:%S}".format(jakarta_time)
 
-f.write(jakarta_time_text)
-
-
-
-
+receipt_text = receipt_text + jakarta_time_text
 
 total = 0
 
@@ -37,16 +25,26 @@ def clear():
   var2.set(0)
   var3.set(0)
   var4.set(0)
+  clicked1.set(1)
+  clicked2.set(1)
+  clicked3.set(1)
+  clicked4.set(1)
+  b.set(0)
   p.set(0)
   e.set(0)
   group_one.set(0)
   group_two.set(0)
   drop5.pack_forget()
   drop6.pack_forget()
+  labelPrice.config(text=" ")
+  labelDisc.config(text=" ")
 
 def ShowChoice():
+    global receipt_text
+  
     print("You pay with ", end = "")
     print(p.get())
+    receipt_text = receipt_text + "\nYou pay with " + p.get()
       
     if p.get() == "Cash":
       drop5.pack_forget()
@@ -60,62 +58,73 @@ def ShowChoice():
 
 def calc_price():
   global total
+  global receipt_text
   
   order = []
   if var1.get() == 1:
     order.append("Pizza")
     number1 = int(clicked1.get())
     print("Pizza", number1)
-    f.write("\nPizza")
-    f.write(str(number1))
+    receipt_text = receipt_text + "\nPizza " + str(number1)
     total = total + (55000 * number1)
     labelPrice.config(text = "IDR " + str(total)) 
   if var2.get() == 1:    
     order.append("Soup")
     number2 = int(clicked2.get())    
     print("Soup", number2)
+    receipt_text = receipt_text + "\nSoup " + str(number2)
     total = total + (38000 * number2)
     labelPrice.config(text = "IDR " + str(total)) 
   if var3.get() == 1:
     order.append("Mineral Water")
     number3 = int(clicked3.get())
     print("Mineral Water", number3)
+    receipt_text = receipt_text + "\nMineral Water " + str(number3)
     total = total + (10000 * number3)
     labelPrice.config(text = "IDR " + str(total)) 
   if var4.get() == 1:
     order.append("Milk")
     number4 = int(clicked4.get())
     print("Milk", number4)
+    receipt_text = receipt_text + "\nMilk " + str(number4)
     total = total + (17000 * number4)
     labelPrice.config(text = "IDR " + str(total)) 
 
   if b.get() == "BCA":   
     print("Payment with BCA")
+    receipt_text = receipt_text + "\nPayment with BCA"
   elif b.get() == "BNI":   
     print("Payment with BNI")
+    receipt_text = receipt_text + "\nPayment with BNI"
   elif b.get() == "BRI":   
     print("Payment with BRI")
+    receipt_text = receipt_text + "\nPayment with BRI"
   elif b.get() == "MANDIRI":   
     print("Payment with MANDIRI")
+    receipt_text = receipt_text + "\nPayment with MANDIRI"
 
   if e.get() == "Gopay":   
     print("Payment with Gopay")
+    receipt_text = receipt_text + "\nPayment with Gopay"
   elif e.get() == "OVO":   
     print("Payment with OVO")
+    receipt_text = receipt_text + "\nPayment with OVO"
   elif e.get() == "Dana":   
     print("Payment with Dana")
+    receipt_text = receipt_text + "\nPayment with Dana"
   elif e.get() == "LinkAja":   
     print("Payment with LinkAja")
-    
-    
+    receipt_text = receipt_text + "\nPayment with LinkAja"
     
   print(order)
   print("Total purchase = IDR ", total)
+  receipt_text = receipt_text + "\nTotal Purchase = " + str(total)
+
 
   if total > 500000:
       print("After 10% discount: " + str(0.9 * total))
       labelDisc.config(text = "IDR " + str(0.9 * total))
-
+      receipt_text = receipt_text + "\nAfter 10% discount " + str(0.9 * total)
   # if group_one.get() == 1:
   #   print("You pay with Debit/Credit Card")
   # elif group_one.get() == 2:
@@ -126,12 +135,19 @@ def calc_price():
 
   if group_two.get() == 1:
     print("You order to dine-in")
+    receipt_text = receipt_text + "\nYou order to dine-in"
   elif group_two.get() == 2:
     print("You order to take away")
+    receipt_text = receipt_text + "\nYou order to take away" 
   elif group_two.get() == 3:
     print("You order to delivery")
+    receipt_text = receipt_text + "\nYou order to delivery\n\n"
 
-  
+
+  f = open('receipt.txt', 'a')
+  f.write(receipt_text)
+  f.close()
+
 
 ws1 = Tk()
 ws1.title("Raii Restaurant")
@@ -196,7 +212,7 @@ p = StringVar()
 p.set(0)
 
 ewallet = [
-  "Choose wallet"
+  "Choose wallet",
   "Gopay",
   "OVO",
   "LinkAja",
@@ -277,7 +293,5 @@ labelDateTime.config(text = jakarta_time_text)
 
 submitBtn = Button(frame_five, text = "Submit", command = calc_price).pack()
 clearBtn = Button(frame_five, text = "Clear", command = clear).pack()
-
-# f.close()
 
 ws1.mainloop()
